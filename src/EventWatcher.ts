@@ -3,9 +3,11 @@ import WebSocket from 'ws';
 import dotenv from 'dotenv';
 import { EventQueue } from './EventQueue';
 import { timelockAbi } from './abis/TimelockAbi';
+import { MorphoBankAbi } from './abis/MorphoBankAbi';
 dotenv.config();
 
 const WSS_URL: string | undefined = process.env.WSS_PROVIDER;
+const MORPHO_BANK: boolean | undefined = process.env.MORPHO_BANK === 'true';
 const TIMELOCK_ADDRESS: string | undefined = process.env.TIMELOCK_ADDRESS;
 
 let provider = new ethers.WebSocketProvider(createWebSocket());
@@ -36,7 +38,7 @@ function startListening() {
     throw new Error('No TIMELOCK_ADDRESS found in env');
   }
   console.log('Started the event listener');
-  const timelockContract = new Contract(TIMELOCK_ADDRESS, timelockAbi, provider);
+  const timelockContract = new Contract(TIMELOCK_ADDRESS, MORPHO_BANK ? MorphoBankAbi : timelockAbi, provider);
 
   const iface = new Interface(timelockAbi);
 
