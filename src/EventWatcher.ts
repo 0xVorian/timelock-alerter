@@ -1,12 +1,12 @@
 import { ethers, Contract, Interface } from 'ethers';
 import WebSocket from 'ws';
 import dotenv from 'dotenv';
-import { metamorphoAbi } from './abis/MetaMorphoAbi';
 import { EventQueue } from './EventQueue';
+import { timelockAbi } from './abis/TimelockAbi';
 dotenv.config();
 
 const WSS_URL: string | undefined = process.env.WSS_PROVIDER;
-const METAMORPHO_ADDRESS: string | undefined = process.env.METAMORPHO_ADDRESS;
+const TIMELOCK_ADDRESS: string | undefined = process.env.TIMELOCK_ADDRESS;
 
 let provider = new ethers.WebSocketProvider(createWebSocket());
 
@@ -32,17 +32,17 @@ function createWebSocket() {
 }
 
 function startListening() {
-  if (!METAMORPHO_ADDRESS) {
-    throw new Error('No METAMORPHO_ADDRESS found in env');
+  if (!TIMELOCK_ADDRESS) {
+    throw new Error('No TIMELOCK_ADDRESS found in env');
   }
   console.log('Started the event listener');
-  const metamorphoContract = new Contract(METAMORPHO_ADDRESS, metamorphoAbi, provider);
+  const timelockContract = new Contract(TIMELOCK_ADDRESS, timelockAbi, provider);
 
-  const iface = new Interface(metamorphoAbi);
+  const iface = new Interface(timelockAbi);
 
-  metamorphoContract.removeAllListeners();
+  timelockContract.removeAllListeners();
 
-  metamorphoContract.on('*', (event) => {
+  timelockContract.on('*', (event) => {
     // The `event.log` has the entire EventLog
     const parsed = iface.parseLog(event.log);
 
