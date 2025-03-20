@@ -40,7 +40,7 @@ function startListening() {
   console.log('Started the event listener');
   const timelockContract = new Contract(TIMELOCK_ADDRESS, MORPHO_BANK ? MorphoBankAbi : timelockAbi, provider);
 
-  const iface = new Interface(timelockAbi);
+  const iface = new Interface(MORPHO_BANK ? MorphoBankAbi : timelockAbi);
 
   timelockContract.removeAllListeners();
 
